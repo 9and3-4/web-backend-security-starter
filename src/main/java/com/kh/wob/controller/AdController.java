@@ -2,6 +2,8 @@ package com.kh.wob.controller;
 
 import com.kh.wob.dto.AdDto;
 import com.kh.wob.dto.CategoryDto;
+import com.kh.wob.entity.Ad;
+import com.kh.wob.entity.User;
 import com.kh.wob.service.AdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +48,13 @@ public class AdController {
         Integer pageCnt = adService.getAds(pageRequest);
         return ResponseEntity.ok(pageCnt);
     }
-    // 광고 검색
-
+    // 광고 삭제
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> adDelete(@PathVariable String postId) {
+        log.info("postId : ", postId );
+        boolean isTrue = adService.deleteAd(postId);
+        return ResponseEntity.ok(isTrue);
+    }
     // 광고 등록
     @PostMapping("/new")
     public ResponseEntity<Boolean> adResister(@RequestBody AdDto adDto) {
