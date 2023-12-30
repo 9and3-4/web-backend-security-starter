@@ -70,5 +70,4 @@ public class Post {
     private double latitude;
     @Column(nullable = false)
     private double longitude;
-
 }
