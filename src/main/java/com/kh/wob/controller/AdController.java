@@ -57,9 +57,9 @@ public class AdController {
     }
     // 광고 등록
     @PostMapping("/new/{postId}")
-    public ResponseEntity<Boolean> adResister(@RequestBody AdDto adDto) {
+    public ResponseEntity<AdDto> adResister(@RequestBody AdDto adDto) {
         log.debug("AdDto : {}", adDto);
-        boolean isTrue = adService.saveAd(adDto);
-        return ResponseEntity.ok(isTrue);
+        AdDto adDto1 = adService.saveAd(adDto);
+        return ResponseEntity.ok(adDto1);
     }
 }
