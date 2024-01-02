@@ -1,10 +1,7 @@
 package com.kh.wob.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kh.wob.dto.ChatRoomReqDto;
-import com.kh.wob.dto.ChatRoomResDto;
-import com.kh.wob.dto.PostDto;
-import com.kh.wob.dto.UserMyPageDto;
+import com.kh.wob.dto.*;
 import com.kh.wob.entity.Chat;
 import com.kh.wob.entity.ChatRoom;
 import com.kh.wob.entity.Post;
@@ -39,6 +36,24 @@ public class ChatService {
     }
     public List<ChatRoomResDto> findAllRoom() { // 채팅방 리스트 반환
         return new ArrayList<>(chatRooms.values());
+    }
+    // 채팅 목록 전체 조회
+    public List<ChatMessageDto> findAllChat() {
+        List<Chat> chat = chatRepository.findAll();
+        List<ChatMessageDto> chatMessageDtos = new ArrayList<>();
+        for(Chat chat1 : chat) {
+            chatMessageDtos.add(convertEntityToChatDto(chat1));
+        }
+    return chatMessageDtos;
+    }
+    // 채팅방 전체 조회
+    public List<ChatRoomResDto> findAllChatRoom() {
+        List<ChatRoom> chatRoom = chatRoomRepository.findAll();
+        List<ChatRoomResDto> chatRoomResDtos = new ArrayList<>();
+        for(ChatRoom chatRoom1 : chatRoom) {
+            chatRoomResDtos.add(convertEntityToRoomDto(chatRoom1));
+        }
+        return chatRoomResDtos;
     }
     public List<ChatRoomResDto> findFreeRoom() { // 채팅방 리스트 반환
         List<ChatRoomResDto> chatRoomResDtoList = new ArrayList<>();
@@ -92,8 +107,8 @@ public class ChatService {
 
     }
 
-    // 방 삭제하기
-    public void removeRoom(String roomId) {
+    // 채팅방 삭제
+    public boolean deleteRoom(String roomId) {
         ChatRoomResDto room = chatRooms.get(roomId); // 방 정보 가져오기
         if (room != null) { // 방이 존재하면
             if (room.isSessionEmpty()) { // 방에 세션이 없으면
@@ -103,8 +118,66 @@ public class ChatService {
                 );
                 if (chatRoomEntity != null) {
                     chatRoomRepository.delete(chatRoomEntity);
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+
+    // 채팅 내역 삭제
+    public boolean deleteChat(Long id) {
+        try {
+            Chat chat = chatRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("해당 채팅 내역이 없습니다.")
+            );
+            chatRepository.delete(chat);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 채팅방 활성화 / 비활성화
+    public boolean updateRoomActive(ChatRoomResDto chatRoomResDto) {
+        try {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomResDto.getRoomId()).orElseThrow(
+                    () -> new RuntimeException("해당 채팅방이 없습니다.")
+            );
+            List<Chat> chats = chatRepository.findByChatRoom(chatRoom).orElseThrow(
+                    () -> new RuntimeException("해당 채팅 내역이 없습니다.")
+            );
+            // 채팅방의 active를 변경
+            chatRoom.setActive(chatRoomResDto.getActive());
+            List<PostDto> postDtos = new ArrayList<>();
+            for(Chat chat : chats) {
+                // 채팅방과 조인되어 있는 채팅 내역의 active도 변경
+                chat.setActive(chatRoomResDto.getActive());
+            }
+
+
+            chatRoomRepository.save(chatRoom);
+            chatRepository.saveAll(chats);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // 채팅 내역 활성화 / 비활성화
+    public boolean updateChatActive(ChatMessageDto chatMessageDto) {
+        try {
+            // 채팅방의 active를 변경
+            Chat chat = chatRepository.findById(chatMessageDto.getId()).orElseThrow(
+                    () -> new RuntimeException("해당 채팅 내역이 없습니다.")
+            );
+            chat.setActive(chatMessageDto.getActive());
+            chatRepository.save(chat);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -199,5 +272,16 @@ public class ChatService {
             return chatRoomResDto;
         }
         return chatRoomResDto;
+    }
+
+    // Chat 엔티티를 dto로 변환
+    private ChatMessageDto convertEntityToChatDto(Chat chat) {
+        ChatMessageDto chatMessageDto = new ChatMessageDto();
+        chatMessageDto.setId(chat.getId());
+        chatMessageDto.setRoomId(chat.getChatRoom().getRoomId());
+        chatMessageDto.setMessage(chat.getMessage());
+        chatMessageDto.setActive(chat.getActive());
+        chatMessageDto.setSender(chat.getSender());
+        return chatMessageDto;
     }
 }
