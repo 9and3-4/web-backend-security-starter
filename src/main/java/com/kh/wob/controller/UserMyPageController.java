@@ -40,13 +40,6 @@ public class UserMyPageController {
         System.out.println("userMyPage dto email, 탈퇴사유 : " + userMyPageDto.getEmail()+userMyPageDto.getWithdrawal());
         return ResponseEntity.ok(isTrue);
     }
-//    //관심 종목(마이페이지)
-//    @GetMapping("/sports/{email}")
-//    public ResponseEntity<List<String>> UserInterestSports(@PathVariable String email) {
-//        List<String> interestSports = userService.interestSports(email);
-//        System.out.println("관심종목 가져오기 이메일 : " + email);
-//        return ResponseEntity.ok(interestSports);
-//    }
 
     // 회원 활성화 비활성화 상태 바꾸기(회원목록)
     @PutMapping("/state")
