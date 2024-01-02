@@ -12,6 +12,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Post> findByTitle(String title);
     List<Post> findByCategoryNameContaining(String keyword);
+    List<Post> findByTitleContaining(String keyword);
+    List<Post> findByIntroductionContaining(String keyword);
     Optional<Post> findById(Long id);
     // postIdList에 해당하는 포스트 리스트 조회 메서드 추가
     List<Post> findByIdIn(List<Long> postIdList);

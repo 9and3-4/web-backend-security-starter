@@ -120,6 +120,38 @@ public class PostService {
         }
         return postDtos;
     }
+    public List<PostDto> getSearchIntroduction(String keyword) {
+        List<Post> posts = postRepository.findByIntroductionContaining(keyword);
+        List<PostDto> postDtos = new ArrayList<>();
+        for(Post post : posts) {
+            postDtos.add(convertEntityToDto(post));
+        }
+        return postDtos;
+    }
+    public List<PostDto> getSearchTitle(String keyword) {
+        List<Post> posts = postRepository.findByTitleContaining(keyword);
+        List<PostDto> postDtos = new ArrayList<>();
+        for(Post post : posts) {
+            postDtos.add(convertEntityToDto(post));
+        }
+        return postDtos;
+    }
+//    public List<PostDto> getSearchIntroduction(String keyword) {
+//        List<Post> posts = postRepository.findByIntroductionContaining(keyword);
+//        List<PostDto> postDtos = new ArrayList<>();
+//        for(Post post : posts) {
+//            postDtos.add(convertEntityToDto(post));
+//        }
+//        return postDtos;
+//    }
+//    public List<PostDto> getSearchTitle(String keyword) {
+//        List<Post> posts = postRepository.findByTitleContaining(keyword);
+//        List<PostDto> postDtos = new ArrayList<>();
+//        for(Post post : posts) {
+//            postDtos.add(convertEntityToDto(post));
+//        }
+//        return postDtos;
+//    }
 
     //userEmail로 게시글 리스트 가져오기
     public List<PostDto> getPostByUserEmail(String userEmail) {
