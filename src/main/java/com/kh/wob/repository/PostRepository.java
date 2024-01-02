@@ -3,6 +3,8 @@ package com.kh.wob.repository;
 
 import com.kh.wob.entity.Post;
 import com.kh.wob.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,4 +20,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // postIdList에 해당하는 포스트 리스트 조회 메서드 추가
     List<Post> findByIdIn(List<Long> postIdList);
     List<Post> findByUserEmail(String userEmail);
+    Page<Post> findAllByOrderByDateDesc(Pageable pageable);
 }
