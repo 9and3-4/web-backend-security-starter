@@ -77,43 +77,42 @@ public class AdService {
         log.debug("saveAd 메서드 호출 ");
         log.debug("AdDto 값: {}", adDto);
 
-            Ad ad = new Ad();
+        Ad ad = new Ad();
 
-            Post post = postRepository.findById(adDto.getPostId()).orElseThrow(
-                    () -> new RuntimeException("Post not found")
-            );
-            log.debug("광고 등록하는 postId: " + adDto.getPostId());
-            System.out.println("담긴 ad 정보 : " + ad);
-            ad.setPost(post);
-            ad.setImage(adDto.getImage());
-            ad.setPeriod(adDto.getPeriod());
-            ad.setFee(adDto.getFee());
-            ad.setPostingDate(adDto.getPostingDate());
-            ad.setActive("inactive");
+        Post post = postRepository.findById(adDto.getPostId()).orElseThrow(
+                () -> new RuntimeException("Post not found")
+        );
+        log.debug("광고 등록하는 postId: " + adDto.getPostId());
+        System.out.println("담긴 ad 정보 : " + ad);
+        ad.setPost(post);
+        ad.setImage(adDto.getImage());
+        ad.setPeriod(adDto.getPeriod());
+        ad.setFee(adDto.getFee());
+        ad.setPostingDate(adDto.getPostingDate());
+        ad.setActive("inactive");
 
-            adRepository.save(ad);
-            System.out.println("ad에 뭐가 담기지? " + ad);
-       return convertEntityToDto(ad);
+        adRepository.save(ad);
+        System.out.println("ad에 뭐가 담기지? " + ad);
+        return convertEntityToDto(ad);
     }
-      // 광고 삭제
-      public boolean deleteAd(String postId) {
-          try {
-              Ad ad = adRepository.findById(postId).orElseThrow(()-> new RuntimeException("존재하지 않는 광고입니다"));
-              adRepository.delete(ad);
-              log.info("해당 광고가 삭제되었습니다. : ", postId);
-              return true;
-          } catch (Exception e) {
-              e.printStackTrace();
-              return false;
-          }
-      }
+    // 광고 삭제
+    public boolean deleteAd(Long adId) {
+        try {
+            Ad ad = adRepository.findById(adId).orElseThrow(()-> new RuntimeException("존재하지 않는 광고입니다"));
+            adRepository.delete(ad);
+            log.info("해당 광고가 삭제되었습니다. : ", adId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
     // 엔티티를 dto로 변환하는 메서드
     private AdDto convertEntityToDto(Ad ad) {
         AdDto adDto = new AdDto();
         adDto.setId(ad.getId());
-        adDto.setPostId(ad.getPost().getId());
         adDto.setFee(ad.getFee());
         adDto.setPeriod(ad.getPeriod());
         adDto.setImage(ad.getImage());
@@ -123,3 +122,4 @@ public class AdService {
         return adDto;
     }
 }
+
