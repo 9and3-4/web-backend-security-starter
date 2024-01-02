@@ -139,7 +139,7 @@ public class PaymentService {
             return false;
         }
     }
-    // 카테고리 목록 중 active 활성화인것만 조회
+    // 결제 목록 중 active 활성화인것만 조회
     public List<PaymentDto> getPaymentActive() {
         List<Payment> payments = paymentRepository.findByActive("active");
         List<PaymentDto> paymentDtos = new ArrayList<>();
@@ -148,7 +148,7 @@ public class PaymentService {
         }
         return paymentDtos;
     }
-    // 게시판 목록 활성화할지 비활성화 선택
+    // 결제 목록 활성화할지 비활성화 선택
     public boolean updatePaymentIsActive(PaymentDto paymentDto) {
         try {
             Payment payment = paymentRepository.findById(paymentDto.getId())
