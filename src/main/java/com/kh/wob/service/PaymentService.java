@@ -1,10 +1,8 @@
 package com.kh.wob.service;
 
+import com.kh.wob.dto.CategoryDto;
 import com.kh.wob.dto.PaymentDto;
-import com.kh.wob.entity.Ad;
-import com.kh.wob.entity.Payment;
-import com.kh.wob.entity.Post;
-import com.kh.wob.entity.User;
+import com.kh.wob.entity.*;
 import com.kh.wob.repository.AdRepository;
 import com.kh.wob.repository.PaymentRepository;
 import com.kh.wob.repository.PostRepository;
@@ -128,5 +126,39 @@ public class PaymentService {
             }
         }
         return paymentDto;
+    }
+    // 결제 삭제
+    public boolean deletePayment(Long paymentId) {
+        try {
+            Payment payment = paymentRepository.findById(paymentId).orElseThrow(()-> new RuntimeException("존재하지 않는 결제입니다"));
+            paymentRepository.delete(payment);
+            log.info("해당 결제가 삭제되었습니다. : ", paymentId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // 카테고리 목록 중 active 활성화인것만 조회
+    public List<PaymentDto> getPaymentActive() {
+        List<Payment> payments = paymentRepository.findByActive("active");
+        List<PaymentDto> paymentDtos = new ArrayList<>();
+        for (Payment payment : payments) {
+            paymentDtos.add(convertEntityToDto(payment));
+        }
+        return paymentDtos;
+    }
+    // 게시판 목록 활성화할지 비활성화 선택
+    public boolean updatePaymentIsActive(PaymentDto paymentDto) {
+        try {
+            Payment payment = paymentRepository.findById(paymentDto.getId())
+                    .orElseThrow( () -> new RuntimeException("해당 결제가 존재하지 않습니다."));
+            payment.setActive(paymentDto.getActive());
+            paymentRepository.save(payment);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
