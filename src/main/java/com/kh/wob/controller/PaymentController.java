@@ -34,12 +34,7 @@ public class PaymentController {
         PaymentDto paymentDto1 = paymentService.paymentAddAdId(paymentDto);
         return ResponseEntity.ok(paymentDto1);
     }
-    // 모든 결제 내역 불러오기
-    @GetMapping("/all")
-    public ResponseEntity<List<PaymentDto>> paymentList() {
-        List<PaymentDto> paymentDtoList = paymentService.paymentList();
-        return ResponseEntity.ok(paymentDtoList);
-    }
+
 
     // paymentId로 결제 내역 불러오기
     @GetMapping("/detail/{paymentId}")
@@ -64,5 +59,11 @@ public class PaymentController {
         PageRequest pageRequest = PageRequest.of(page,size);
         int pageCnt = paymentService.getPaymentPage(email,pageRequest);
         return ResponseEntity.ok(pageCnt);
+    }
+    // 모든 결제 내역 불러오기
+    @GetMapping("/all")
+    public ResponseEntity<List<PaymentDto>> paymentList() {
+        List<PaymentDto> paymentDtoList = paymentService.paymentList();
+        return ResponseEntity.ok(paymentDtoList);
     }
 }
