@@ -269,7 +269,6 @@ public class UserService {
             return false;
         }
     }
-
     // 회원 탈퇴 시 비활성화로 변경
 
     public boolean withdrawalInactive(UserMyPageDto userMyPageDto) {
@@ -285,7 +284,6 @@ public class UserService {
             return false;
         }
     }
-
 
 }
 

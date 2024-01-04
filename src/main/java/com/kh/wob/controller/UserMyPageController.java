@@ -52,7 +52,7 @@ public class UserMyPageController {
     // 회원 목록 페이징(회원목록)
     @GetMapping("/list/page")
     public ResponseEntity<List<UserMyPageDto>> getUserList(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "5") int size) {
+                                                           @RequestParam(defaultValue = "5") int size) {
         List<UserMyPageDto> list = userService.getUserList(page, size);
         return ResponseEntity.ok(list);
     }
@@ -60,7 +60,7 @@ public class UserMyPageController {
     // 회원 페이지 수 조회(회원목록)
     @GetMapping("/count")
     public ResponseEntity<Integer> listUser(@RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "5") int size) {
+                                            @RequestParam(defaultValue = "5") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Integer pageCnt = userService.getUserList(pageRequest);
         return ResponseEntity.ok(pageCnt);
