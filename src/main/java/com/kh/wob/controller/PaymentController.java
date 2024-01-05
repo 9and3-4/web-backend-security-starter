@@ -51,7 +51,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentDto);
     }
 
-    // 페이지 수 조회
+    // 해당 유저의 결제 내역 페이지 수 조회
     @GetMapping("/detail/count")
     public ResponseEntity<Integer> paymentCount(@RequestParam String email,
                                                 @RequestParam(defaultValue = "0") int page,
@@ -65,6 +65,22 @@ public class PaymentController {
     public ResponseEntity<List<PaymentDto>> paymentList() {
         List<PaymentDto> paymentDtoList = paymentService.paymentList();
         return ResponseEntity.ok(paymentDtoList);
+    }
+
+    // 전체 결제 내역 불러오기 (페이지네이션)
+    @GetMapping("/all/page")
+    public ResponseEntity<List<PaymentDto>>paymentAllList(@RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+        List<PaymentDto> paymentDto = paymentService.paymentAllList(page,size);
+        return ResponseEntity.ok(paymentDto);
+    }
+    // 전체 결제 내역 페이지 수 조회
+    @GetMapping("/all/count")
+    public ResponseEntity<Integer> paymentAllCount(@RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page,size);
+        int pageCnt = paymentService.getPaymentAllPage(pageRequest);
+        return ResponseEntity.ok(pageCnt);
     }
     // 활성화 비활성화 상태 바꾸기
     @PutMapping("/state")

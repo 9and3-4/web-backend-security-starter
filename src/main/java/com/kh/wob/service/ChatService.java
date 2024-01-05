@@ -2,15 +2,14 @@ package com.kh.wob.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.wob.dto.*;
-import com.kh.wob.entity.Chat;
-import com.kh.wob.entity.ChatRoom;
-import com.kh.wob.entity.Post;
-import com.kh.wob.entity.User;
+import com.kh.wob.entity.*;
 import com.kh.wob.repository.ChatRepository;
 import com.kh.wob.repository.ChatRoomRepository;
 import com.kh.wob.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -37,7 +36,7 @@ public class ChatService {
     public List<ChatRoomResDto> findAllRoom() { // 채팅방 리스트 반환
         return new ArrayList<>(chatRooms.values());
     }
-    // 채팅 목록 전체 조회
+    // 채팅 내역 전체 조회
     public List<ChatMessageDto> findAllChat() {
         List<Chat> chat = chatRepository.findAll();
         List<ChatMessageDto> chatMessageDtos = new ArrayList<>();
@@ -46,6 +45,24 @@ public class ChatService {
         }
     return chatMessageDtos;
     }
+
+    // 채팅 내역 전체 조회 페이지네이션
+    public List<ChatMessageDto> chatAllList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Chat> chat = chatRepository.findAll(pageable).getContent();
+        List<ChatMessageDto> chatMessageDtos = new ArrayList<>();
+        for(Chat chat1 : chat) {
+            chatMessageDtos.add(convertEntityToChatDto(chat1));
+        }
+        return chatMessageDtos;
+
+    }
+
+    // 채팅 내역 전체 페이지 수 조회
+    public int getChatAllPage(Pageable pageable) {
+        return chatRepository.findAllByOrderByIdDesc(pageable).getTotalPages();
+    }
+
     // 채팅방 전체 조회
     public List<ChatRoomResDto> findAllChatRoom() {
         List<ChatRoom> chatRoom = chatRoomRepository.findAll();
@@ -198,6 +215,7 @@ public class ChatService {
         chatMessage.setSender(sender);
         chatMessage.setMessage(message);
         chatMessage.setSentAt(LocalDateTime.now());
+        chatMessage.setActive("active");
         chatRepository.save(chatMessage);
     }
     // 이전 채팅 가져오기

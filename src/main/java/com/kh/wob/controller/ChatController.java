@@ -6,6 +6,7 @@ import com.kh.wob.service.ChatService;
 import com.kh.wob.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
@@ -115,5 +116,21 @@ public class ChatController {
     public ResponseEntity<Boolean> deleteRoom(@PathVariable String roomId) {
         boolean isTrue = chatService.deleteRoom(roomId);
         return ResponseEntity.ok(isTrue);
+    }
+
+    // 전체 채팅 내역 불러오기 (페이지네이션)
+    @GetMapping("/all/page")
+    public ResponseEntity<List<ChatMessageDto>>chatAllList(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        List<ChatMessageDto> chatMessageDtos = chatService.chatAllList(page,size);
+        return ResponseEntity.ok(chatMessageDtos);
+    }
+    // 전체 채팅 내역 페이지 수 조회
+    @GetMapping("/all/count")
+    public ResponseEntity<Integer> paymentAllCount(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page,size);
+        int pageCnt = chatService.getChatAllPage(pageRequest);
+        return ResponseEntity.ok(pageCnt);
     }
 }

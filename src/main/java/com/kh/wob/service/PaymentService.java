@@ -88,6 +88,22 @@ public class PaymentService {
         return convertEntityToDto(payment);
 
     }
+    // 결제 내역 전체 조회 페이지네이션
+    public List<PaymentDto> paymentAllList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Payment> payments = paymentRepository.findAll(pageable).getContent();
+        List<PaymentDto> paymentDtos = new ArrayList<>();
+        for(Payment payment : payments) {
+            paymentDtos.add(convertEntityToDto(payment));
+        }
+        return paymentDtos;
+
+    }
+    // 결제 내역 전체 페이지 수 조회
+    public int getPaymentAllPage(Pageable pageable) {
+        return paymentRepository.findAll(pageable).getTotalPages();
+    }
+
     // 결제 내역 페이지네이션
     public List<PaymentDto> paymentListByEmail(String email, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
